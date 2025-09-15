@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.5)
 project(uMario)
 
 # Use our modified FindSDL2* modules
@@ -28,8 +28,17 @@ file(COPY uNext/files DESTINATION .)
 include_directories(uNext)
 
 file(GLOB_RECURSE uMario_SOURCES "uNext/*.cpp")
-add_executable (uMario ${uMario_SOURCES})
+
+# Embed app icon on Windows by adding the .rc resource to the executable sources
+set(APP_ICON_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/app.rc")
+
+if (WIN32)
+    add_executable(uMario ${uMario_SOURCES} ${APP_ICON_RESOURCE})
+else()
+    add_executable(uMario ${uMario_SOURCES})
+endif()
 
 target_link_libraries(uMario ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARY} ${SDL2_MIXER_LIBRARY})
+
 
 install(TARGETS uMario RUNTIME DESTINATION ${BIN_DIR})
